@@ -1,0 +1,48 @@
+.container {
+  width: 100%;
+  height: 40rem;
+  background-color: rgb(241, 240, 240);
+}
+
+.image {
+  width: 100%;
+  height: 85vh;
+  position: absolute;
+}
+
+.container_slogan {
+  width: 50%;
+  text-align: end;
+  position: relative;
+  color: #ffffff;
+  left: 35%;
+  top: 18%;
+}
+
+.slogan {
+  font-size: 3rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.sub_slogan {
+  font-size: 1.5rem;
+  width: 80%;
+  margin: 0;
+  margin-left: 20%;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.link {
+  text-decoration: none;
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.link:hover {
+  background-color: rgb(58, 158, 204);
+  color: #ffffff;
+}

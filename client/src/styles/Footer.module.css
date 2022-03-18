@@ -1,0 +1,31 @@
+.container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 40% 30% 30%;
+  padding: 1rem 0;
+  align-items: center;
+}
+
+.logo {
+  width: 15rem;
+}
+
+.dudas {
+  color: rgb(58, 158, 204);
+  font-weight: 600;
+}
+
+.mail_container {
+  display: flex;
+}
+
+.mail_img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.mail {
+  margin: 0.3rem 0 0 0;
+  font-size: 1.2rem;
+  color: rgb(117, 117, 117);
+}

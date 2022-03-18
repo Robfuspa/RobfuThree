@@ -1,0 +1,26 @@
+.container {
+  width: 80%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.logo {
+  width: 50%;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.list_item {
+  margin: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  cursor: underline;
+  vertical-align: top;
+}
