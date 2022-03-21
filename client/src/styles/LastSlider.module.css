@@ -1,3 +1,7 @@
+.slider_container {
+  position: relative;
+}
+
 .title {
   text-align: center;
   margin-top: 5rem;

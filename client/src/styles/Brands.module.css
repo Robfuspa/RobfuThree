@@ -34,17 +34,50 @@
   width: 90%;
   box-shadow: 1px 1px 10px rgb(223, 223, 223);
   height: 90%;
+  position: relative;
 }
 
 .card_image {
   object-fit: cover;
   width: 100%;
   height: 100%;
+  position: absolute;
+}
+
+.card_image:hover {
+  opacity: 0.07;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  -ms-transition: opacity 500ms;
+  transition: opacity 500ms;
 }
 
 .card_sub_imagen {
   width: 100%;
   height: 100%;
+  position: absolute;
+  background-color: #868686;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.01;
+  font-size: 1.2rem;
+}
+
+.card_sub_imagen:hover {
+  opacity: 0.9;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  -ms-transition: opacity 500ms;
+  transition: opacity 500ms;
+}
+
+.card_sub_imagen p {
+  width: 70%;
+  text-align: center;
 }
 
 .link {

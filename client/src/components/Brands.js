@@ -17,7 +17,9 @@ const Brands = () => {
             src="/img/logoabet.png"
             alt="logo abet laminati"
           />
-          <div className={style.card_sub_imagen}></div>
+          <div className={style.card_sub_imagen}>
+            <p>Laminados decorativos de alta presión</p>
+          </div>
         </div>
         <div className={style.card}>
           <img
@@ -25,7 +27,9 @@ const Brands = () => {
             src="/img/logograss.png"
             alt="logo grass"
           />
-          <div className={style.card_sub_imagen}></div>
+          <div className={style.card_sub_imagen}>
+            <p>Quincallería</p>
+          </div>
         </div>
         <div className={style.card}>
           <img
@@ -33,7 +37,9 @@ const Brands = () => {
             src="/img/logodvp.png"
             alt="logo dvp"
           />
-          <div className={style.card_sub_imagen}></div>
+          <div className={style.card_sub_imagen}>
+            <p>Quincallería & accesorios</p>
+          </div>
         </div>
         <div className={style.card}>
           <img
@@ -41,7 +47,9 @@ const Brands = () => {
             src="/img/logomasisa.png"
             alt="logo masisa"
           />
-          <div className={style.card_sub_imagen}></div>
+          <div className={style.card_sub_imagen}>
+            <p>Maderas aglomeradas</p>
+          </div>
         </div>
         <div className={style.card}>
           <img
@@ -49,7 +57,9 @@ const Brands = () => {
             src="/img/logosige.png"
             alt="logo sige"
           />
-          <div className={style.card_sub_imagen}></div>
+          <div className={style.card_sub_imagen}>
+            <p>Accesorios</p>
+          </div>
         </div>
       </div>
       <Link to="/three" className={style.link}>
