@@ -72,7 +72,7 @@ const LastSlider = () => {
         Unéte a Robfu y disfruta de sus beneficios
       </h3>
       <div className={style.slider_container}>
-        <div className={style.slider_card}>
+        <div>
           <img
             id="sliderImage"
             className={style.card_image}

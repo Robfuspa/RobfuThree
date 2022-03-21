@@ -69,3 +69,29 @@
   background-color: rgb(58, 158, 204);
   color: #ffffff;
 }
+
+@media only screen and (max-width: 750px) {
+  .cards_title {
+    font-size: 2rem;
+    padding-top: 2rem;
+  }
+
+  .card_image {
+    width: 4rem;
+  }
+
+  .card_number {
+    font-size: 1.8rem;
+  }
+
+  .card_description {
+    font-size: 0.6rem;
+    width: 90%;
+  }
+
+  .link {
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    font-size: 0.8rem;
+  }
+}

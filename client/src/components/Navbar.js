@@ -9,7 +9,6 @@ const Navbar = () => {
         src="/img/logo_texto_isotipo.svg"
         alt="logo robfu"
       />
-      <div></div>
       <ul className={style.list}>
         <li className={style.list_item}>INGRESA</li>
         <li className={style.list_item}>CREA TU CUENTA</li>

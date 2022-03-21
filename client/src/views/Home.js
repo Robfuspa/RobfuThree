@@ -4,6 +4,7 @@ import FirstSlider from "../components/FirstSlider";
 import LastSlider from "../components/LastSlider";
 import Navbar from "../components/Navbar";
 import Steps from "../components/Steps";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       <Steps />
       <Brands />
       <LastSlider />
+      <Footer />
     </>
   );
 };
