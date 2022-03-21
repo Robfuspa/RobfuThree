@@ -1,12 +1,12 @@
 import Home from "./views/Home";
 import { Router } from "@reach/router";
-import Three from "./components/Three";
+import Config from "./components/Config/Main";
 const App = () => {
   return (
     <div className="App">
       <Router>
         <Home path="/" />
-        <Three path="/three" />
+        <Config path="/three" />
       </Router>
     </div>
   );

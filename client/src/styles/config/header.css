@@ -1,0 +1,19 @@
+
+.config-header {width: 100%; height: 100px; position: relative; background-color: #F5F5F5;}
+.config-header .header-side {width: 300px;}
+.config-header .header-center {flex: 1;}
+
+.config-header .header-side.header-logo img {width: 200px;}
+
+.config-header .header-center .chevron {height: 20px; margin-bottom: 30px; cursor: pointer;}
+.config-header .header-center .chevron.chevron-right {transform: rotate(180deg);}
+.config-header .header-center.step-0 .chevron.chevron-left {opacity: 0; cursor: default;}
+.config-header .header-center.step-3 .chevron.chevron-right {opacity: 0; cursor: default;}
+.config-header .header-center .step-item {flex-direction: column; position: relative; width: 150px;}
+.config-header .header-center .step-item .step-number {width: 40px; height: 40px; border-radius: 50%; border: 2px solid; font-size: 20px; font-weight: 500; color: #0B93B2;}
+.config-header .header-center .step-item .step-label {margin-top: 10px; color: #0B93B2; font-size: 16px; font-weight: 500;}
+.config-header .header-center .step-item.pass .step-number {background-color: #0B93B2; color: white; cursor: pointer;}
+.config-header .header-center .step-item .step-line {position: absolute; width: 88px; height: 2px; background-color: #0B93B2; top: 21px; left: 105px;}
+
+.config-header .header-side.header-user {flex-direction: column;}
+.config-header .header-side.header-user img {width: 50px;}
