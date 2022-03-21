@@ -2,18 +2,17 @@
   width: 80%;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
 }
 
 .logo {
-  width: 50%;
+  width: 15rem;
 }
 
 .list {
   display: flex;
   flex-direction: row;
   list-style: none;
-  flex-wrap: wrap;
 }
 
 .list_item {
@@ -23,4 +22,18 @@
   font-size: 0.9rem;
   cursor: underline;
   vertical-align: top;
+}
+
+@media only screen and (max-width: 600px) {
+  .logo {
+    width: 9rem;
+  }
+
+  .list {
+    flex-direction: column;
+  }
+
+  .list_item {
+    font-size: 0.6rem;
+  }
 }

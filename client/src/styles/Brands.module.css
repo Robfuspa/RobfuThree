@@ -96,3 +96,40 @@
   background-color: rgb(58, 158, 204);
   color: #ffffff;
 }
+
+@media only screen and (max-width: 750px) {
+  .container {
+    width: 90%;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    width: 90%;
+  }
+
+  .cards_container {
+    width: 90%;
+  }
+
+  .card {
+    height: 70%;
+  }
+
+  .card_sub_imagen {
+    font-size: 0.7rem;
+  }
+
+  .card_sub_imagen p {
+    width: 90%;
+  }
+
+  .link {
+    padding: 0.5rem 1rem;
+    margin-left: 0;
+    margin-bottom: 0;
+    font-size: 0.8rem;
+  }
+}
