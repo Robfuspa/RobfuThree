@@ -3,8 +3,18 @@
 .bottom-part .bottom-title { padding: 10px 20px; background-color: #868686; color: white; margin: 10px 0px;}
 .bottom-part .slider-wrapper {width: 100%;}
 .bottom-part .slider { display: flex;}
-.bottom-part .slider .hist-item { width: 360px; height: 250px; margin: 10px; border: 1px solid; padding: 10px;}
+.bottom-part .slider .item { height: 250px; margin: 10px; border: 1px solid; padding: 10px;}
+.bottom-part .slider .item .thumb { width: 100%; height:180px;}
+.bottom-part .slider .item .thumb img { max-width: 100%; max-height:100%; transition: all 0.3s; cursor: pointer;}
+
+.bottom-part .slider .hist-item { width: 360px;}
 .bottom-part .slider .hist-item .hist-name { margin-bottom: 10px;}
-.bottom-part .slider .hist-item .hist-thumb { width: 100%; height:210px;}
-.bottom-part .slider .hist-item .hist-thumb img { max-width: 100%; max-height:100%; transition: all 0.3s; cursor: pointer;}
 .bottom-part .slider .hist-item .hist-thumb img:hover { transform: scale(1.05);}
+
+.bottom-part .slider .cabinet-item { width: 600px; display: flex; padding: 5px;}
+.bottom-part .slider .cabinet-item .item-part { flex: 1; margin: 0px 5px;}
+.bottom-part .slider .cabinet-item .cabinet-name { margin-bottom: 10px; font-size: 16px; font-weight: 700; word-break: break-all;  height: 50px;}
+.bottom-part .slider .cabinet-item:hover .cabinet-thumb img { transform: scale(1.05);}
+.bottom-part .slider .cabinet-item .cabinet-sub-name { margin-bottom: 10px; font-size: 14px; height: 50px;}
+.bottom-part .slider .cabinet-item .cabinet-detail .detail-info{display: flex;}
+.bottom-part .slider .cabinet-item .cabinet-detail .detail-info .label {width: 100px; }

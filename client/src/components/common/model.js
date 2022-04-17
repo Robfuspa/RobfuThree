@@ -48,3 +48,12 @@ function getDis(pos0, pos1) {
 	const disX = pos0.x - pos1.x, disZ = pos0.z - pos1.z;
 	return Math.sqrt(Math.pow(disX, 2) + Math.pow(disZ, 2));
 }
+
+export function GetObjKey() {
+	const sourceStr = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	var keyStr = '';
+	for (let i = 0; i < 10; i++) {
+		keyStr += sourceStr[Math.floor(Math.random()*sourceStr.length)];
+	}
+	return keyStr;
+}
