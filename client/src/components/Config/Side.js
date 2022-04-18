@@ -1,11 +1,11 @@
 import React from 'react';
 import axios from 'axios';
-import { roomTypeArr, sideW, canvasH, stepArr } from '../common/info';
+import { roomTypeArr, sideW, canvasH, stepArr, posArr } from '../common/info';
 
 export default class SideComponent extends React.Component {
 	constructor(props) {
 		super(props);
-		const {pageKey, selStep, selRoom, selSize} = props;
+		const {pageKey, selStep, selRoom, selSize, selPos} = props;
 		this.state = {pageKey, selStep, selStepInfo:stepArr[0]};
 	}
 
@@ -13,7 +13,7 @@ export default class SideComponent extends React.Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom', 'selSize'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'selSize', 'selPos'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, () => {
 					if (key==='selStep') {
@@ -25,10 +25,6 @@ export default class SideComponent extends React.Component {
 		});
 	}
 
-	onClickSize = () => {
-
-	}
-
 	changeSize = (e, key) => {
 		var {selSize} = this.state, val = parseInt(e.target.value)/100;
 		selSize[key] = val;
@@ -36,7 +32,7 @@ export default class SideComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selStep, selRoom, selStepInfo, selSize} = this.state;
+		const {pageKey, selStep, selRoom, selStepInfo, selSize, selPos} = this.state;
 		return (
 			<div className={`content-side`} style={{width:sideW+'px', height:canvasH+'px'}}>
 				<div className='side-wrapper'>
@@ -54,7 +50,7 @@ export default class SideComponent extends React.Component {
 									</div>
 									<div className='buttons'>
 										<div className='button'>Ver más</div> {/* see more */}
-										<div className='button'>seleccionar</div> {/* select */}
+										<div className='button' onClick={()=>this.props.setSelRoom(item.key)}>seleccionar</div> {/* select */}
 									</div>
 								</div>
 							) }
@@ -69,12 +65,17 @@ export default class SideComponent extends React.Component {
 									<div className='unit'>cm</div>
 								</div>
 							) }
-							<div className='button' onClick={this.onClickSize}>CONTINUAR</div>
+							<div className='button' onClick={this.props.setStepCabinet}>CONTINUAR</div>
 						</div>
 					}
 					{selStep==='design' &&
-						<div className='cabinet-list'>
-							
+						<div className='pos-list'>
+							{posArr.map((item, idx) =>
+								<div className={`pos-item ${selPos===item.key?'active':''}`} key={idx}>
+									<div className='pos-name'>{item.title}</div>
+									<div className='pos-content'></div>
+								</div>
+							) }
 						</div>
 					}
 				</div>

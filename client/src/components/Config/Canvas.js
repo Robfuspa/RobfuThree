@@ -4,15 +4,14 @@ import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
-import { sideW, canvasH, contentW } from '../common/info';
-import { GetBoxMesh, SetWallSize, SetWallMat } from '../common/model';
+import { sideW, canvasH, contentW, cabinetArr } from '../common/info';
+import { GetBoxMesh, SetWallSize, SetWallMat, GetObjKey } from '../common/model';
 
 const renderId='render2d', thick=0.1, mLeft = (window.innerWidth/contentW)/2+400, mTop = 100;
 export default class CanvasComponent extends React.Component {
 	constructor(props) {
 		super(props);
-		this.backMapArr = []; this.loadArr = [];  this.convertArr = [];
-		this.hotArr = []; this.lineArr = []; this.overHotMesh = null;
+		this.modelArr = []; this.overHotMesh = null;
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2(); this.extHotWidth = 70;
 		const {pageKey, selRoom, selStep, selSize} = props;
 		this.state = {pageKey, selRoom, selStep, selSize};
@@ -38,10 +37,12 @@ export default class CanvasComponent extends React.Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'addKey'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, ()=> {
-					// if (key==='selSize') { this.setRoomSize(); }
+					if (key==='addKey') {
+						if (this.state.addKey) this.addCabinet(); 
+					}
 				});
 			}
 		});
@@ -129,9 +130,30 @@ export default class CanvasComponent extends React.Component {
 		SetWallMat(this.roomGroup, this.camera.position);
 	}
 
+	addCabinet = () => {
+		const {selSize, addKey} = this.state;
+		const selCabinet = this.modelArr.find(obj=>obj.modelKey===addKey);
+		const cloneModel = selCabinet.clone(), posX = Math.random()*selSize.w - selSize.w/2, posZ = Math.random()*selSize.d - selSize.d/2;
+		cloneModel.objKey = GetObjKey(); cloneModel.position.set(posX, 0, posZ);
+		cloneModel.traverse(child=>{ if (child instanceof THREE.Mesh) child.objKey = cloneModel.objKey; })
+		this.totalGroup.add(cloneModel);
+		this.props.deleteAddKey();
+	}
+
 	loadModel = () => {
-		// new FBXLoader().load( modelHotspot, (object) => {
-		// }, (xhr) => { }, (error) => { console.log(error); } );
+		cabinetArr.forEach(item => {
+			new FBXLoader().load( './cabinet/custom_' + item.key+'.fbx', (object) => {
+				const vPos = new THREE.Box3(new THREE.Vector3()).setFromObject(object);
+				object.children.forEach(child => {
+					child.position.y -= vPos.min.y;
+					child.position.z -= vPos.min.z;
+				});
+				const scl = 1/(vPos.max.y-vPos.min.y);
+				object.scale.set(scl, scl, scl);
+				object.modelKey = item.key;
+				this.modelArr.push(object);
+			}, (xhr) => { }, (error) => { console.log(error); } );
+		});
 	}
 
 	setCanvasSize = () => {

@@ -6,7 +6,7 @@ import SideComponent from './Side';
 import CanvasComponent from './Canvas';
 import BottomComponent from './Bottom';
 import LoadingComponent from './Loading';
-import { sideW, canvasH, contentW } from '../common/info';
+import { sideW, canvasH, contentW, stepArr, posArr } from '../common/info';
 import imgExit from '../../images/exit.png';
 
 import '../../styles/config/index.css';
@@ -17,7 +17,7 @@ export default class MainComponent extends React.Component {
 	constructor(props) {
 		super(props);
 		this.stayTime = -1;
-		this.state = {pageKey:'canvas', selStep:'style', loadPro: 0, selRoom:'', selSize:{w:4.5, h:2.2, d:3} };
+		this.state = {pageKey:'canvas', selStep:stepArr[0].key, loadPro: 0, selRoom:'', selSize:{w:4.5, h:2.2, d:3}, selPos:posArr[0].key };
 	}
 
 	componentDidMount() {
@@ -33,7 +33,7 @@ export default class MainComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selStep, loadPro, loading, selRoom, selSize} = this.state;
+		const {pageKey, selStep, loadPro, loading, selRoom, selSize, selPos, addKey} = this.state;
 		return (
 			<div className={`config-page ${pageKey}-page ${selStep}-step`}>
 				<HeaderComponent
@@ -47,7 +47,10 @@ export default class MainComponent extends React.Component {
 								selStep={selStep}
 								selRoom={selRoom}
 								selSize={selSize}
+								selPos={selPos}
 								setSelSize={(selSize)=>this.setState({selSize})}
+								setSelRoom={(selRoom)=>this.setState({selRoom, selStep:stepArr[1].key})} // , () => this.setState({})
+								setStepCabinet={()=>this.setState({selStep:stepArr[2].key})}
 							></SideComponent>
 							<CanvasComponent
 								pageKey={pageKey}
@@ -55,11 +58,16 @@ export default class MainComponent extends React.Component {
 								selStep={selStep}
 								loading={loading}
 								selSize={selSize}
+								selPos={selPos}
+								addKey={addKey}
 								setLoading={(loading, loadPro)=>this.setState({loading, loadPro})}
+								deleteAddKey={()=>this.setState({addKey:null})}
 							></CanvasComponent>
 						</div>
 						<BottomComponent
 							selStep={selStep}
+							selPos={selPos}
+							addCabinet={(addKey)=>this.setState({addKey})}
 						></BottomComponent>
 						<div className='other-info flex'>
 							<div className='project-name'>{projectName}</div>
