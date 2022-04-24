@@ -11,7 +11,7 @@ const renderId='render2d', thick=0.1, mLeft = (window.innerWidth/contentW)/2+400
 export default class CanvasComponent extends React.Component {
 	constructor(props) {
 		super(props);
-		this.modelArr = []; this.overHotMesh = null;
+		this.modelArr = []; this.overHotMesh = null; this.meshArr = [];
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2(); this.extHotWidth = 70;
 		const {pageKey, selRoom, selStep, selSize} = props;
 		this.state = {pageKey, selRoom, selStep, selSize};
@@ -37,49 +37,64 @@ export default class CanvasComponent extends React.Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom', 'addKey'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'addKey', 'selCabCol'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, ()=> {
 					if (key==='addKey') {
 						if (this.state.addKey) this.addCabinet(); 
-					}
+					} else if (key==='selCabCol' && this.selObj && this.state.selCabCol) this.setCabColor();
 				});
 			}
 		});
 		this.setRoomSize();
 	}
 
+	setCabColor = () => {
+		this.selObj.traverse(child=>{
+			if (child instanceof THREE.Mesh && (child.name.includes('door') || child.name.includes('body')) ) {
+				child.material.color.setHex(this.state.selCabCol);
+			}
+		})
+	}
+
 	onClickWindow = (e) => {
+		const interHot = this.getHotObject(e);
+		if (!interHot) {this.props.setSelModelKey(null); return;}
+		const {objKey} = interHot.object;
+		this.selObj = this.totalGroup.children.find(child=>child.objKey===objKey);
+		this.props.setSelModelKey(this.selObj.modelKey);
+		// this.overHotMesh = interHot?interHot.object:null;
 	}
 
 	onMouseMove = (e) => {
-		if (this.controlChange) return;
-		const interHot = this.getHotObject(e);
-		if (interHot) {
-			jQuery('#'+renderId).css({cursor:'pointer'});
-			const {object} = interHot;
-			this.overHotMesh = object;
-		} else {
-			jQuery('#'+renderId).css({cursor:'default'});
-			if (this.overHotMesh) this.closeHotOver();
-		}
+		// if (this.controlChange) return;
+		// const interHot = this.getHotObject(e);
+		// if (interHot) {
+		// 	jQuery('#'+renderId).css({cursor:'pointer'});
+		// 	const {object} = interHot;
+		// 	this.overHotMesh = object;
+		// } else {
+		// 	jQuery('#'+renderId).css({cursor:'default'});
+		// 	if (this.overHotMesh) this.closeHotOver();
+		// }
 	}
 
 	getHotObject = (e) => {
-		if (!this.hotArr || !this.hotArr.length) return;
+		const container = document.getElementById("container");
+		const rect = container.getBoundingClientRect();
+		const cTop = rect.top, cLeft = rect.left;
 		const posX = e.clientX, posY = e.clientY;
-		const hotArr = this.hotArr.filter(hotItem=>hotItem.visible===true);
-		this.mouse.x = ( posX / this.cWidth ) * 2 - 1;
-		this.mouse.y = - ( posY / this.cHeight ) * 2 + 1;
+		this.mouse.x = ( (posX - cLeft) / this.cWidth ) * 2 - 1;
+		this.mouse.y = - ( (posY - cTop) / this.cHeight ) * 2 + 1;
 		this.raycaster.setFromCamera( this.mouse, this.camera );
-		return this.raycaster.intersectObjects( hotArr )[0];
+		return this.raycaster.intersectObjects( this.meshArr )[0];
 	}
 
-	addRender2d = (meshArr) => {
-		meshArr.forEach(meshItem => {
+	// addRender2d = (meshArr) => {
+	// 	meshArr.forEach(meshItem => {
 			
-		});
-	}
+	// 	});
+	// }
 
 	initScene = () => {
 		this.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -134,8 +149,14 @@ export default class CanvasComponent extends React.Component {
 		const {selSize, addKey} = this.state;
 		const selCabinet = this.modelArr.find(obj=>obj.modelKey===addKey);
 		const cloneModel = selCabinet.clone(), posX = Math.random()*selSize.w - selSize.w/2, posZ = Math.random()*selSize.d - selSize.d/2;
-		cloneModel.objKey = GetObjKey(); cloneModel.position.set(posX, 0, posZ);
-		cloneModel.traverse(child=>{ if (child instanceof THREE.Mesh) child.objKey = cloneModel.objKey; })
+		cloneModel.objKey = GetObjKey(); cloneModel.modelKey = addKey; cloneModel.position.set(posX, 0, posZ);
+		cloneModel.traverse(child=> {
+			if (child instanceof THREE.Mesh) {
+				const {color, map} = child.material;
+				child.material = new THREE.MeshStandardMaterial({color, map});
+				child.objKey = cloneModel.objKey; this.meshArr.push(child);
+			}
+		})
 		this.totalGroup.add(cloneModel);
 		this.props.deleteAddKey();
 	}
@@ -151,6 +172,7 @@ export default class CanvasComponent extends React.Component {
 				const scl = 1/(vPos.max.y-vPos.min.y);
 				object.scale.set(scl, scl, scl);
 				object.modelKey = item.key;
+				object.cabPos = item.pos;
 				this.modelArr.push(object);
 			}, (xhr) => { }, (error) => { console.log(error); } );
 		});

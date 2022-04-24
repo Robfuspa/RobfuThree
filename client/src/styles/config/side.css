@@ -1,6 +1,6 @@
 
 .content-side .side-wrapper {padding-right: 20px; width: calc(100% - 20px); height: 100%;}
-.content-side .side-title {width: 100; height: 80px;}
+.content-side .side-title {width: 100%; height: 80px;}
 .content-side .side-title .main-label {font-size: 20px; font-weight: 700; color: #0B93B2; margin: 10px 0px;}
 .content-side .room-list {width: 100%; height: calc(100% - 90px);}
 .content-side .room-list .room-item { background-color: #F5F5F5; margin: 10px 0px; padding: 10px;}
@@ -16,3 +16,8 @@
 .content-side .room-size .size-item input {font-size: 16px; width: 60px; text-align: right;}
 .content-side .room-size .size-item .unit {font-size: 16px; margin-left: 10px;}
 .content-side .room-size .button {margin: 40px auto; width: 150px;}
+
+.content-side .model-info-wrapper {margin-top: 20px;}
+.content-side .model-info-wrapper .color-wrapper {width: 100%;}
+.content-side .model-info-wrapper .color-wrapper .color-item {margin: 10px 0px; width: calc(100% - 40px); height: 30px; cursor: pointer; border: 1px solid white;}
+.content-side .model-info-wrapper .color-wrapper .color-item.active {border-color: red;}

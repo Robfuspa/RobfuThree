@@ -57,3 +57,12 @@ export const cabinetArr = [
 	{key:'Kitchen_Slider_Cabinet_Storages_ML003H_St_1', title:'Kitchen_Slider_Cabinet_Storages_ML003H_St_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)},
 	{key:'Plate_rack_drawer_St_1', title:'Plate_rack_drawer_St_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)}
 ];
+
+export const cabColArr = [
+	{hex:0x663300, str:'#663300'},
+	{hex:0x999999, str:'#999999'},
+	{hex:0x00FFFF, str:'#00FFFF'},
+	{hex:0xFFFF00, str:'#FFFF00'},
+	{hex:0x111111, str:'#111111'},
+	{hex:0xFF9966, str:'#FF9966'},
+]
