@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { roomTypeArr, sideW, canvasH, stepArr, posArr } from '../common/info';
+import { roomTypeArr, sideW, canvasH, stepArr, posArr, cabinetArr, cabColArr, cabWoodArr } from '../common/info';
 
 export default class SideComponent extends React.Component {
 	constructor(props) {
@@ -13,12 +13,15 @@ export default class SideComponent extends React.Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom', 'selSize', 'selPos'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'selSize', 'selPos', 'selModelKey', 'selBodyCol', 'selDoorCol', 'selBodyWood', 'selDoorWood'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, () => {
 					if (key==='selStep') {
 						const selStepInfo = stepArr.find(item=>item.key===this.state.selStep);
 						this.setState({selStepInfo});
+					} else if (key==='selModelKey') {
+						const selModelInfo = cabinetArr.find(item=>item.key===this.state.selModelKey);
+						this.setState({selModelInfo});
 					}
 				});
 			}
@@ -32,7 +35,7 @@ export default class SideComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selStep, selRoom, selStepInfo, selSize, selPos} = this.state;
+		const {pageKey, selStep, selRoom, selStepInfo, selSize, selPos, selModelInfo, selBodyCol, selDoorCol, selBodyWood, selDoorWood} = this.state;
 		return (
 			<div className={`content-side`} style={{width:sideW+'px', height:canvasH+'px'}}>
 				<div className='side-wrapper'>
@@ -69,14 +72,51 @@ export default class SideComponent extends React.Component {
 						</div>
 					}
 					{selStep==='design' &&
-						<div className='pos-list'>
-							{posArr.map((item, idx) =>
-								<div className={`pos-item ${selPos===item.key?'active':''}`} key={idx}>
-									<div className='pos-name'>{item.title}</div>
-									<div className='pos-content'></div>
+						<>
+							<div className='pos-list'>
+								{posArr.map((item, idx) =>
+									<div className={`pos-item ${selPos===item.key?'active':''}`} key={idx}>
+										<div className='pos-name'>{item.title}</div>
+										<div className='pos-content'>
+
+										</div>
+									</div>
+								) }
+							</div>
+							{selModelInfo &&
+								<div className='model-info-wrapper'>
+									<div className='big-title'>Cabinet body</div>
+									<div className='color-title'>color</div>
+									<div className='color-wrapper'>
+										{cabColArr.map((item, idx)=>
+											<div className={`color-item ${selBodyCol===item.hex?'active':''}`} key={idx} style={{backgroundColor:item.str}} onClick={()=>this.props.setSelBodyCol(item.hex)}></div>
+										)}
+									</div>
+									<div className='color-title'>Texture</div>
+									<div className='color-wrapper'>
+										{cabWoodArr.map((item, idx)=>
+											<img className={`color-item ${selBodyWood===item.key?'active':''}`} key={idx} src={item.img} onClick={()=>this.props.setSelBodyWood(item.key)}></img>
+										)}
+									</div>
+									<div className='middle-line'></div>
+
+									<div className='big-title'>Cabinet Door</div>
+									<div className='color-title'>Color</div>
+									<div className='color-wrapper'>
+										{cabColArr.map((item, idx)=>
+											<div className={`color-item ${selDoorCol===item.hex?'active':''}`} key={idx} style={{backgroundColor:item.str}} onClick={()=>this.props.setSelDoorCol(item.hex)}></div>
+										)}
+									</div>
+									<div className='color-title'>Texture</div>
+									<div className='color-wrapper'>
+										{cabWoodArr.map((item, idx)=>
+											<img className={`color-item ${selDoorWood===item.key?'active':''}`} key={idx} src={item.img} onClick={()=>this.props.setSelDoorWood(item.key)}></img>
+										)}
+									</div>
+
 								</div>
-							) }
-						</div>
+							}
+						</>
 					}
 				</div>
 			</div>

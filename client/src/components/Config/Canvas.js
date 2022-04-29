@@ -4,14 +4,14 @@ import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
-import { sideW, canvasH, contentW, cabinetArr } from '../common/info';
+import { sideW, canvasH, contentW, cabinetArr, cabWoodArr } from '../common/info';
 import { GetBoxMesh, SetWallSize, SetWallMat, GetObjKey } from '../common/model';
 
 const renderId='render2d', thick=0.1, mLeft = (window.innerWidth/contentW)/2+400, mTop = 100;
 export default class CanvasComponent extends React.Component {
 	constructor(props) {
 		super(props);
-		this.modelArr = []; this.overHotMesh = null;
+		this.modelArr = []; this.overHotMesh = null; this.meshArr = [];
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2(); this.extHotWidth = 70;
 		const {pageKey, selRoom, selStep, selSize} = props;
 		this.state = {pageKey, selRoom, selStep, selSize};
@@ -28,58 +28,81 @@ export default class CanvasComponent extends React.Component {
 		document.getElementById(renderId).addEventListener('mousemove', this.onMouseMove);
 		document.getElementById(renderId).addEventListener('click', this.onClickWindow);
 		document.getElementById(renderId).addEventListener('touchend', this.onClickWindow);
-		for (let i = 0; i <= 20; i++) {
-			setTimeout(() => {
-				this.props.setLoading(true, i * 5);
-			}, 100 * i);
-		}
-		setTimeout(() => { this.props.setLoading(false); }, 100 * 21);
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom', 'addKey'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'addKey', 'selBodyCol', 'selDoorCol', 'selBodyWood', 'selDoorWood'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, ()=> {
 					if (key==='addKey') {
 						if (this.state.addKey) this.addCabinet(); 
-					}
+					} else if ((key==='selBodyCol' || key==='selDoorCol') && this.selObj && this.state[key]) this.setCabColor(key.substring(3, 7).toLowerCase(), key);
+					else if ((key==='selBodyWood' || key==='selDoorWood') && this.selObj && this.state[key]) this.setCabWood(key.substring(3, 7).toLowerCase(), key);
 				});
 			}
 		});
 		this.setRoomSize();
 	}
 
+	setCabWood = (part, key) => {
+		const selWoodImg = cabWoodArr.find(item=>item.key===this.state[key]);
+		const selWoodMap = new THREE.TextureLoader().load(selWoodImg.img);
+		selWoodMap.wrapS = selWoodMap.wrapT = THREE.RepeatWrapping;
+		// selWoodMap.repeat.set( 0.1, 0.1 );
+		this.selObj.traverse(child=>{
+			if (child instanceof THREE.Mesh && child.name.includes(part) ) {
+				child.material.map = selWoodMap;
+				child.material.needsUpdate = true;
+			}
+		})
+	}
+
+	setCabColor = (part, key) => {
+		this.selObj.traverse(child=> {
+			if (child instanceof THREE.Mesh && child.name.includes(part) ) { // child.name.includes('door')
+				child.material.color.setHex(this.state[key]);
+			}
+		})
+	}
+
 	onClickWindow = (e) => {
+		const interHot = this.getHotObject(e);
+		if (!interHot) {this.props.setSelModelKey(null); return;}
+		const {objKey} = interHot.object;
+		this.selObj = this.totalGroup.children.find(child=>child.objKey===objKey);
+		this.props.setSelModelKey(this.selObj.modelKey);
+		// this.overHotMesh = interHot?interHot.object:null;
 	}
 
 	onMouseMove = (e) => {
-		if (this.controlChange) return;
-		const interHot = this.getHotObject(e);
-		if (interHot) {
-			jQuery('#'+renderId).css({cursor:'pointer'});
-			const {object} = interHot;
-			this.overHotMesh = object;
-		} else {
-			jQuery('#'+renderId).css({cursor:'default'});
-			if (this.overHotMesh) this.closeHotOver();
-		}
+		// if (this.controlChange) return;
+		// const interHot = this.getHotObject(e);
+		// if (interHot) {
+		// 	jQuery('#'+renderId).css({cursor:'pointer'});
+		// 	const {object} = interHot;
+		// 	this.overHotMesh = object;
+		// } else {
+		// 	jQuery('#'+renderId).css({cursor:'default'});
+		// 	if (this.overHotMesh) this.closeHotOver();
+		// }
 	}
 
 	getHotObject = (e) => {
-		if (!this.hotArr || !this.hotArr.length) return;
+		const container = document.getElementById("container");
+		const rect = container.getBoundingClientRect();
+		const cTop = rect.top, cLeft = rect.left;
 		const posX = e.clientX, posY = e.clientY;
-		const hotArr = this.hotArr.filter(hotItem=>hotItem.visible===true);
-		this.mouse.x = ( posX / this.cWidth ) * 2 - 1;
-		this.mouse.y = - ( posY / this.cHeight ) * 2 + 1;
+		this.mouse.x = ( (posX - cLeft) / this.cWidth ) * 2 - 1;
+		this.mouse.y = - ( (posY - cTop) / this.cHeight ) * 2 + 1;
 		this.raycaster.setFromCamera( this.mouse, this.camera );
-		return this.raycaster.intersectObjects( hotArr )[0];
+		return this.raycaster.intersectObjects( this.meshArr )[0];
 	}
 
-	addRender2d = (meshArr) => {
-		meshArr.forEach(meshItem => {
+	// addRender2d = (meshArr) => {
+	// 	meshArr.forEach(meshItem => {
 			
-		});
-	}
+	// 	});
+	// }
 
 	initScene = () => {
 		this.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -134,13 +157,20 @@ export default class CanvasComponent extends React.Component {
 		const {selSize, addKey} = this.state;
 		const selCabinet = this.modelArr.find(obj=>obj.modelKey===addKey);
 		const cloneModel = selCabinet.clone(), posX = Math.random()*selSize.w - selSize.w/2, posZ = Math.random()*selSize.d - selSize.d/2;
-		cloneModel.objKey = GetObjKey(); cloneModel.position.set(posX, 0, posZ);
-		cloneModel.traverse(child=>{ if (child instanceof THREE.Mesh) child.objKey = cloneModel.objKey; })
+		cloneModel.objKey = GetObjKey(); cloneModel.modelKey = addKey; cloneModel.position.set(posX, 0, posZ);
+		cloneModel.traverse(child=> {
+			if (child instanceof THREE.Mesh) {
+				const {color, map} = child.material;
+				child.material = new THREE.MeshStandardMaterial({color:0xCCCCCC, map});
+				child.objKey = cloneModel.objKey; this.meshArr.push(child);
+			}
+		})
 		this.totalGroup.add(cloneModel);
 		this.props.deleteAddKey();
 	}
 
 	loadModel = () => {
+		var loadedCount = 0;
 		cabinetArr.forEach(item => {
 			new FBXLoader().load( './cabinet/custom_' + item.key+'.fbx', (object) => {
 				const vPos = new THREE.Box3(new THREE.Vector3()).setFromObject(object);
@@ -151,7 +181,11 @@ export default class CanvasComponent extends React.Component {
 				const scl = 1/(vPos.max.y-vPos.min.y);
 				object.scale.set(scl, scl, scl);
 				object.modelKey = item.key;
+				object.cabPos = item.pos;
 				this.modelArr.push(object);
+				loadedCount++;
+				this.props.setLoading(true, Math.round(loadedCount/cabinetArr.length * 100));
+				if (loadedCount===cabinetArr.length) setTimeout(() => { this.props.setLoading(false); }, 500);
 			}, (xhr) => { }, (error) => { console.log(error); } );
 		});
 	}

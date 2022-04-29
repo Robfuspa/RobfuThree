@@ -33,7 +33,7 @@ export default class MainComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selStep, loadPro, loading, selRoom, selSize, selPos, addKey} = this.state;
+		const {pageKey, selStep, loadPro, loading, selRoom, selSize, selPos, addKey, selModelKey, selBodyCol, selDoorCol, selBodyWood, selDoorWood} = this.state;
 		return (
 			<div className={`config-page ${pageKey}-page ${selStep}-step`}>
 				<HeaderComponent
@@ -47,10 +47,19 @@ export default class MainComponent extends React.Component {
 								selStep={selStep}
 								selRoom={selRoom}
 								selSize={selSize}
+								selBodyCol={selBodyCol}
+								selDoorCol={selDoorCol}
+								selBodyWood={selBodyWood}
+								selDoorWood={selDoorWood}
 								selPos={selPos}
+								selModelKey={selModelKey}
 								setSelSize={(selSize)=>this.setState({selSize})}
 								setSelRoom={(selRoom)=>this.setState({selRoom, selStep:stepArr[1].key})} // , () => this.setState({})
 								setStepCabinet={()=>this.setState({selStep:stepArr[2].key})}
+								setSelBodyCol={(selBodyCol)=>this.setState({selBodyCol})}
+								setSelDoorCol={(selDoorCol)=>this.setState({selDoorCol})}
+								setSelBodyWood={(selBodyWood)=>this.setState({selBodyWood})}
+								setSelDoorWood={(selDoorWood)=>this.setState({selDoorWood})}
 							></SideComponent>
 							<CanvasComponent
 								pageKey={pageKey}
@@ -59,9 +68,15 @@ export default class MainComponent extends React.Component {
 								loading={loading}
 								selSize={selSize}
 								selPos={selPos}
+								selModelKey={selModelKey}
+								selBodyCol={selBodyCol}
+								selDoorCol={selDoorCol}
+								selBodyWood={selBodyWood}
+								selDoorWood={selDoorWood}
 								addKey={addKey}
 								setLoading={(loading, loadPro)=>this.setState({loading, loadPro})}
 								deleteAddKey={()=>this.setState({addKey:null})}
+								setSelModelKey={(selModelKey)=>this.setState({selBodyCol:null}, () =>  this.setState({selModelKey} )  )  }
 							></CanvasComponent>
 						</div>
 						<BottomComponent
