@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
-import { sideW, canvasH, contentW, cabinetArr } from '../common/info';
+import { sideW, canvasH, contentW, cabinetArr, cabWoodArr } from '../common/info';
 import { GetBoxMesh, SetWallSize, SetWallMat, GetObjKey } from '../common/model';
 
 const renderId='render2d', thick=0.1, mLeft = (window.innerWidth/contentW)/2+400, mTop = 100;
@@ -28,31 +28,39 @@ export default class CanvasComponent extends React.Component {
 		document.getElementById(renderId).addEventListener('mousemove', this.onMouseMove);
 		document.getElementById(renderId).addEventListener('click', this.onClickWindow);
 		document.getElementById(renderId).addEventListener('touchend', this.onClickWindow);
-		for (let i = 0; i <= 20; i++) {
-			setTimeout(() => {
-				this.props.setLoading(true, i * 5);
-			}, 100 * i);
-		}
-		setTimeout(() => { this.props.setLoading(false); }, 100 * 21);
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom', 'addKey', 'selCabCol'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'addKey', 'selBodyCol', 'selDoorCol', 'selBodyWood', 'selDoorWood'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, ()=> {
 					if (key==='addKey') {
 						if (this.state.addKey) this.addCabinet(); 
-					} else if (key==='selCabCol' && this.selObj && this.state.selCabCol) this.setCabColor();
+					} else if ((key==='selBodyCol' || key==='selDoorCol') && this.selObj && this.state[key]) this.setCabColor(key.substring(3, 7).toLowerCase(), key);
+					else if ((key==='selBodyWood' || key==='selDoorWood') && this.selObj && this.state[key]) this.setCabWood(key.substring(3, 7).toLowerCase(), key);
 				});
 			}
 		});
 		this.setRoomSize();
 	}
 
-	setCabColor = () => {
+	setCabWood = (part, key) => {
+		const selWoodImg = cabWoodArr.find(item=>item.key===this.state[key]);
+		const selWoodMap = new THREE.TextureLoader().load(selWoodImg.img);
+		selWoodMap.wrapS = selWoodMap.wrapT = THREE.RepeatWrapping;
+		// selWoodMap.repeat.set( 0.1, 0.1 );
 		this.selObj.traverse(child=>{
-			if (child instanceof THREE.Mesh && (child.name.includes('door') || child.name.includes('body')) ) {
-				child.material.color.setHex(this.state.selCabCol);
+			if (child instanceof THREE.Mesh && child.name.includes(part) ) {
+				child.material.map = selWoodMap;
+				child.material.needsUpdate = true;
+			}
+		})
+	}
+
+	setCabColor = (part, key) => {
+		this.selObj.traverse(child=> {
+			if (child instanceof THREE.Mesh && child.name.includes(part) ) { // child.name.includes('door')
+				child.material.color.setHex(this.state[key]);
 			}
 		})
 	}
@@ -153,7 +161,7 @@ export default class CanvasComponent extends React.Component {
 		cloneModel.traverse(child=> {
 			if (child instanceof THREE.Mesh) {
 				const {color, map} = child.material;
-				child.material = new THREE.MeshStandardMaterial({color, map});
+				child.material = new THREE.MeshStandardMaterial({color:0xCCCCCC, map});
 				child.objKey = cloneModel.objKey; this.meshArr.push(child);
 			}
 		})
@@ -162,6 +170,7 @@ export default class CanvasComponent extends React.Component {
 	}
 
 	loadModel = () => {
+		var loadedCount = 0;
 		cabinetArr.forEach(item => {
 			new FBXLoader().load( './cabinet/custom_' + item.key+'.fbx', (object) => {
 				const vPos = new THREE.Box3(new THREE.Vector3()).setFromObject(object);
@@ -174,6 +183,9 @@ export default class CanvasComponent extends React.Component {
 				object.modelKey = item.key;
 				object.cabPos = item.pos;
 				this.modelArr.push(object);
+				loadedCount++;
+				this.props.setLoading(true, Math.round(loadedCount/cabinetArr.length * 100));
+				if (loadedCount===cabinetArr.length) setTimeout(() => { this.props.setLoading(false); }, 500);
 			}, (xhr) => { }, (error) => { console.log(error); } );
 		});
 	}

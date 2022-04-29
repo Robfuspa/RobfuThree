@@ -1,5 +1,10 @@
 
 import imgTempRoom from '../../images/temp-room.jpg';
+import imgWood from '../../images/wood_texture/wood.jpg';
+import imgWood0 from '../../images/wood_texture/wood_0.jpg';
+import imgWood1 from '../../images/wood_texture/wood_1.jpg';
+import imgWood2 from '../../images/wood_texture/wood_2.jpg';
+import imgWood3 from '../../images/wood_texture/wood_3.jpg';
 
 export const sideW = 400, canvasH = window.innerHeight - 550, contentW = Math.min(window.innerWidth - 100, 1600) ;
 
@@ -65,4 +70,12 @@ export const cabColArr = [
 	{hex:0xFFFF00, str:'#FFFF00'},
 	{hex:0x111111, str:'#111111'},
 	{hex:0xFF9966, str:'#FF9966'},
+]
+
+export const cabWoodArr = [
+	{key:'wood', img:imgWood},
+	{key:'wood0', img:imgWood0},
+	{key:'wood1', img:imgWood1},
+	{key:'wood2', img:imgWood2},
+	{key:'wood3', img:imgWood3},
 ]
