@@ -86,7 +86,7 @@ export default class SideComponent extends React.Component {
 							{selModelInfo &&
 								<div className='model-info-wrapper'>
 									<div className='big-title'>Cabinet body</div>
-									<div className='color-title'>color</div>
+									<div className='color-title'>Color</div>
 									<div className='color-wrapper'>
 										{cabColArr.map((item, idx)=>
 											<div className={`color-item ${selBodyCol===item.hex?'active':''}`} key={idx} style={{backgroundColor:item.str}} onClick={()=>this.props.setSelBodyCol(item.hex)}></div>
