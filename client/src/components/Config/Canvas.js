@@ -1,13 +1,12 @@
 import React from 'react';
-import jQuery from 'jquery';
 import * as THREE from 'three';
-import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 import { sideW, canvasH, contentW, cabinetArr, cabWoodArr } from '../common/info';
-import { GetBoxMesh, SetWallSize, SetWallMat, GetObjKey } from '../common/model';
+import { GetBoxMesh, SetWallSize, SetWallMat, GetObjKey, SetCabinetSize, SetSameMat } from '../common/model';
 
-const renderId='render2d', thick=0.1, mLeft = (window.innerWidth/contentW)/2+400, mTop = 100;
+const renderId='render2d', thick=0.1;
 export default class CanvasComponent extends React.Component {
 	constructor(props) {
 		super(props);
@@ -31,16 +30,18 @@ export default class CanvasComponent extends React.Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom', 'addKey', 'selBodyCol', 'selDoorCol', 'selBodyWood', 'selDoorWood'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'addKey', 'selBodyCol', 'selDoorCol', 'selBodyWood', 'selDoorWood', 'selCabSize'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, ()=> {
 					if (key==='addKey') {
 						if (this.state.addKey) this.addCabinet(); 
 					} else if ((key==='selBodyCol' || key==='selDoorCol') && this.selObj && this.state[key]) this.setCabColor(key.substring(3, 7).toLowerCase(), key);
 					else if ((key==='selBodyWood' || key==='selDoorWood') && this.selObj && this.state[key]) this.setCabWood(key.substring(3, 7).toLowerCase(), key);
+					else if (key==='selCabSize' && this.state.selCabSize) {this.selObj.selCabSize = this.state.selCabSize; SetCabinetSize(this.selObj);}
 				});
 			}
 		});
+		if (this.selObj && this.state.selCabSize) {this.selObj.selCabSize = this.state.selCabSize; SetCabinetSize(this.selObj);}
 		this.setRoomSize();
 	}
 
@@ -48,7 +49,7 @@ export default class CanvasComponent extends React.Component {
 		const selWoodImg = cabWoodArr.find(item=>item.key===this.state[key]);
 		const selWoodMap = new THREE.TextureLoader().load(selWoodImg.img);
 		selWoodMap.wrapS = selWoodMap.wrapT = THREE.RepeatWrapping;
-		// selWoodMap.repeat.set( 0.1, 0.1 );
+		// selWoodMap.repeat.set( 1, 1 );
 		this.selObj.traverse(child=>{
 			if (child instanceof THREE.Mesh && child.name.includes(part) ) {
 				child.material.map = selWoodMap;
@@ -70,7 +71,7 @@ export default class CanvasComponent extends React.Component {
 		if (!interHot) {this.props.setSelModelKey(null); return;}
 		const {objKey} = interHot.object;
 		this.selObj = this.totalGroup.children.find(child=>child.objKey===objKey);
-		this.props.setSelModelKey(this.selObj.modelKey);
+		this.props.setSelModelKey(this.selObj.modelKey, this.selObj.selCabSize);
 		// this.overHotMesh = interHot?interHot.object:null;
 	}
 
@@ -145,7 +146,6 @@ export default class CanvasComponent extends React.Component {
 
 	setRoomSize = () => {
 		const {selSize} = this.state;
-		// console.log(selSize);
 		this.roomGroup.children.forEach(wall => {
 			SetWallSize(wall, selSize, thick)
 		});
@@ -155,16 +155,22 @@ export default class CanvasComponent extends React.Component {
 
 	addCabinet = () => {
 		const {selSize, addKey} = this.state;
-		const selCabinet = this.modelArr.find(obj=>obj.modelKey===addKey);
-		const cloneModel = selCabinet.clone(), posX = Math.random()*selSize.w - selSize.w/2, posZ = Math.random()*selSize.d - selSize.d/2;
+		const selCabinet = this.modelArr.find(obj=>obj.modelKey===addKey), cN = this.totalGroup.children.length - 1, rN = Math.round(selSize.w);
+		const cloneModel = selCabinet.clone(), posX = (cN%rN) + 0.5 - selSize.w/2, posZ = Math.floor(cN/rN) - selSize.d/2;
 		cloneModel.objKey = GetObjKey(); cloneModel.modelKey = addKey; cloneModel.position.set(posX, 0, posZ);
+		cloneModel.pos = selCabinet.pos;
 		cloneModel.traverse(child=> {
 			if (child instanceof THREE.Mesh) {
-				const {color, map} = child.material;
-				child.material = new THREE.MeshStandardMaterial({color:0xCCCCCC, map});
+				// const {color, map} = child.material;
+				// child.material = new THREE.MeshStandardMaterial({color:0xCCCCCC, map, side:2, color});
 				child.objKey = cloneModel.objKey; this.meshArr.push(child);
 			}
 		})
+		if (cloneModel.pos !== 'electric') {
+			cloneModel.sizeOld = selCabinet.sizeOld; cloneModel.sizeArr = selCabinet.sizeArr;
+			cloneModel.selCabSize = {x:cloneModel.sizeArr.x[0], y:cloneModel.sizeArr.y[0], z:cloneModel.sizeArr.z[0]}
+			SetCabinetSize(cloneModel);
+		}
 		this.totalGroup.add(cloneModel);
 		this.props.deleteAddKey();
 	}
@@ -172,16 +178,30 @@ export default class CanvasComponent extends React.Component {
 	loadModel = () => {
 		var loadedCount = 0;
 		cabinetArr.forEach(item => {
-			new FBXLoader().load( './cabinet/custom_' + item.key+'.fbx', (object) => {
+			const modelDir = item.pos==='electric'?'electric/':'cabinet/custom_';
+			new FBXLoader().load( './'+modelDir + item.key+'.fbx', (object) => {
 				const vPos = new THREE.Box3(new THREE.Vector3()).setFromObject(object);
-				object.children.forEach(child => {
-					child.position.y -= vPos.min.y;
-					child.position.z -= vPos.min.z;
-				});
-				const scl = 1/(vPos.max.y-vPos.min.y);
-				object.scale.set(scl, scl, scl);
+				object.traverse(child=>{ if (child instanceof THREE.Mesh) {
+					if (item.pos==='electric') {
+						child.material = SetSameMat(child.material);
+						// if (child.material.length) child.material.forEach(mat => { mat.side = 0; });
+						// else child.material.side = 0;
+					}
+					else child.material = new THREE.MeshStandardMaterial({color:0xCCCCCC, side:2});
+				} })
+				// object.children.forEach(child => {
+				// 	child.position.y -= vPos.min.y;
+				// 	child.position.z -= vPos.min.z;
+				// });
+				const sizeOld = {x:vPos.max.x - vPos.min.x, y:vPos.max.y - vPos.min.y, z:vPos.max.z - vPos.min.z};
+				// const scl = 0.8/sizeOld.y, dX = sizeOld.x * scl, dZ = sizeOld.z * scl; console.log(dX, dZ);
+				if (item.pos==='electric') {
+					const scl = item.h/(sizeOld.y * 100); object.scale.set(scl, scl, scl);
+				} else {
+					object.sizeOld = sizeOld; object.sizeArr = item.sizeArr;
+				}
 				object.modelKey = item.key;
-				object.cabPos = item.pos;
+				object.pos = item.pos;
 				this.modelArr.push(object);
 				loadedCount++;
 				this.props.setLoading(true, Math.round(loadedCount/cabinetArr.length * 100));
@@ -216,7 +236,7 @@ export default class CanvasComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selRoom, selStep} = this.state;
+		const {pageKey} = this.state;
 		return (
 			<div className={`canvas ${pageKey==='canvas'?'active':''}`}>
 				<div id='container' className='canvas'></div>

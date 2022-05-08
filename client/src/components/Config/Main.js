@@ -33,7 +33,7 @@ export default class MainComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selStep, loadPro, loading, selRoom, selSize, selPos, addKey, selModelKey, selBodyCol, selDoorCol, selBodyWood, selDoorWood} = this.state;
+		const {pageKey, selStep, loadPro, loading, selRoom, selSize, selCabSize, selPos, addKey, selModelKey, selBodyCol, selDoorCol, selBodyWood, selDoorWood} = this.state;
 		return (
 			<div className={`config-page ${pageKey}-page ${selStep}-step`}>
 				<HeaderComponent
@@ -53,13 +53,16 @@ export default class MainComponent extends React.Component {
 								selDoorWood={selDoorWood}
 								selPos={selPos}
 								selModelKey={selModelKey}
+								selCabSize={selCabSize}
 								setSelSize={(selSize)=>this.setState({selSize})}
 								setSelRoom={(selRoom)=>this.setState({selRoom, selStep:stepArr[1].key})} // , () => this.setState({})
 								setStepCabinet={()=>this.setState({selStep:stepArr[2].key})}
+								setSelPos={(selPos)=>this.setState({selPos})}
 								setSelBodyCol={(selBodyCol)=>this.setState({selBodyCol})}
 								setSelDoorCol={(selDoorCol)=>this.setState({selDoorCol})}
 								setSelBodyWood={(selBodyWood)=>this.setState({selBodyWood})}
 								setSelDoorWood={(selDoorWood)=>this.setState({selDoorWood})}
+								setSelCabSize={(value, key) => { var {selCabSize} = this.state; selCabSize[key] = value; this.setState(selCabSize); }}
 							></SideComponent>
 							<CanvasComponent
 								pageKey={pageKey}
@@ -73,10 +76,11 @@ export default class MainComponent extends React.Component {
 								selDoorCol={selDoorCol}
 								selBodyWood={selBodyWood}
 								selDoorWood={selDoorWood}
+								selCabSize={selCabSize}
 								addKey={addKey}
 								setLoading={(loading, loadPro)=>this.setState({loading, loadPro})}
 								deleteAddKey={()=>this.setState({addKey:null})}
-								setSelModelKey={(selModelKey)=>this.setState({selBodyCol:null}, () =>  this.setState({selModelKey} )  )  }
+								setSelModelKey={(selModelKey, selCabSize)=>this.setState({selBodyCol:null, selCabSize}, () =>  this.setState({selModelKey} )  )  }
 							></CanvasComponent>
 						</div>
 						<BottomComponent
