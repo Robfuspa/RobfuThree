@@ -6,14 +6,14 @@ export default class SideComponent extends React.Component {
 	constructor(props) {
 		super(props);
 		const {pageKey, selStep, selRoom, selSize, selPos} = props;
-		this.state = {pageKey, selStep, selStepInfo:stepArr[0]};
+		this.state = {pageKey, selStep, selStepInfo:stepArr[0], selPos};
 	}
 
 	componentDidMount() {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom', 'selSize', 'selPos', 'selModelKey', 'selBodyCol', 'selDoorCol', 'selBodyWood', 'selDoorWood'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'selSize', 'selCabSize', 'selPos', 'selModelKey', 'selBodyCol', 'selDoorCol', 'selBodyWood', 'selDoorWood'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]}, () => {
 					if (key==='selStep') {
@@ -35,7 +35,7 @@ export default class SideComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selStep, selRoom, selStepInfo, selSize, selPos, selModelInfo, selBodyCol, selDoorCol, selBodyWood, selDoorWood} = this.state;
+		const {pageKey, selStep, selRoom, selStepInfo, selSize, selPos, selModelInfo, selCabSize, selBodyCol, selDoorCol, selBodyWood, selDoorWood} = this.state;
 		return (
 			<div className={`content-side`} style={{width:sideW+'px', height:canvasH+'px'}}>
 				<div className='side-wrapper'>
@@ -75,16 +75,23 @@ export default class SideComponent extends React.Component {
 						<>
 							<div className='pos-list'>
 								{posArr.map((item, idx) =>
-									<div className={`pos-item ${selPos===item.key?'active':''}`} key={idx}>
-										<div className='pos-name'>{item.title}</div>
-										<div className='pos-content'>
-
-										</div>
-									</div>
+									<div className={`pos-item ${selPos===item.key?'active':''}`} key={idx} onClick={()=>this.props.setSelPos(item.key)}>{item.title}</div>
 								) }
 							</div>
-							{selModelInfo &&
+							{selModelInfo && selCabSize &&
 								<div className='model-info-wrapper'>
+									<div className='big-title'>Cabinet size</div>
+										{[{label:'Width', axis:'x'}, {label:'Height', axis:'y'}, {label:'Depth', axis:'z'}].map((partItem, partIdx) => 
+											<div className='size-part' key={partIdx}>
+												<div className='size-title'>{partItem.label}</div>
+												<div className='size-list'>
+													{selModelInfo.sizeArr[partItem.axis].map((item, idx)=>
+														<div className={`size-item ${selCabSize[partItem.axis]===item?'active':''}`} key={idx} onClick={()=>this.props.setSelCabSize(item, partItem.axis)}>{item}</div>
+													)}
+												</div>
+											</div>
+										)}
+
 									<div className='big-title'>Cabinet body</div>
 									<div className='color-title'>Color</div>
 									<div className='color-wrapper'>

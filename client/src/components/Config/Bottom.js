@@ -1,19 +1,18 @@
 import React from 'react';
-import axios from 'axios';
-import { histArr, stepArr, cabinetArr } from '../common/info';
+import { histArr, cabinetArr } from '../common/info';
 
 export default class BottomComponent extends React.Component {
 	constructor(props) {
 		super(props);
-		const {pageKey, selStep, selRoom} = props;
-		this.state = {pageKey, selStep, selRoom};
+		const {pageKey, selStep, selRoom, selPos} = props;
+		this.state = {pageKey, selStep, selRoom, selPos};
 	}
 
 	componentDidMount() {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		['pageKey', 'selStep', 'selRoom'].forEach(key => {
+		['pageKey', 'selStep', 'selRoom', 'selPos'].forEach(key => {
 			if (this.state[key] !== nextProps[key]) {
 				this.setState({[key]:nextProps[key]});
 			}
@@ -21,7 +20,8 @@ export default class BottomComponent extends React.Component {
 	}
 
 	render() {
-		const {pageKey, selStep, selRoom} = this.state;
+		const {selStep, selRoom, selPos} = this.state;
+		const cabArr = selPos?cabinetArr.filter(item=>{return item.pos===selPos}):[];
 		return (
 			<div className={`bottom-part`}>
                 <div className='bottom-title'>HISTORIAL DEL PROYECTO</div>
@@ -32,20 +32,20 @@ export default class BottomComponent extends React.Component {
 								<div className={`item hist-item ${selRoom===item.key?'active':''}`} key={idx}>
 									<div className='hist-name'>{item.title}</div>
 									<div className='thumb hist-thumb flex'>
-										<img src={item.img}></img>
+										<img src={item.img} alt=''></img>
 									</div>
 								</div>
 							) }
 						</div>
 					}
 					{selStep==='design' &&
-						<div className='slider' style={{width:cabinetArr.length * 600 + 'px'}}>
-							{cabinetArr.map((item, idx) => // selStep=='style' && 
+						<div className='slider' style={{width:cabArr.length * 600 + 'px'}}>
+							{cabArr.map((item, idx) => // selStep=='style' && 
 								<div className={`item cabinet-item `} key={idx}>
 									<div className='item-part'>
 										<div className='cabinet-name'>{item.title}</div>
 										<div className='thumb cabinet-thumb flex'>
-											<img src={`./cabinet/custom_${item.key}.jpg`}></img>
+											<img src={`./${item.pos==='electric'?'electric/':'cabinet/custom_'}${item.key}.jpg`} alt=''></img>
 										</div>
 									</div>
 									<div className='item-part'>

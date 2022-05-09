@@ -11,6 +11,9 @@
 .content-side .room-list .room-item .buttons {display: flex; justify-content: flex-end;}
 .content-side .room-list .room-item .buttons .button {margin: 5px; font-size: 16px;}
 
+.content-side .pos-list .pos-item {margin: 2px 0px; cursor: pointer;}
+.content-side .pos-list .pos-item.active {color: blue; font-weight: 700; cursor: default;}
+
 .content-side .room-size .size-item {margin: 10px 0px; display: flex;}
 .content-side .room-size .size-item .label {width: 150px; text-align: right; margin-right: 15px;}
 .content-side .room-size .size-item input {font-size: 16px; width: 60px; text-align: right;}
@@ -20,6 +23,13 @@
 .content-side .model-info-wrapper {margin-top: 20px; height: calc(100% - 190px); overflow-y: auto;}
 .content-side .model-info-wrapper .big-title {margin-top: 20px; font-size: 20px; font-weight: 900;}
 .content-side .model-info-wrapper .middle-line {margin: 10px 0px; height: 2px; width: 100%; background-color: grey;}
+
+.content-side .model-info-wrapper .size-part {display: flex; align-items: center;}
+.content-side .model-info-wrapper .size-part .size-title {width: 80px;}
+.content-side .model-info-wrapper .size-part .size-list {display: flex;}
+.content-side .model-info-wrapper .size-part .size-list .size-item {margin: 5px; padding: 5px 10px; border: 1px solid; border-radius: 4px; cursor: pointer;}
+.content-side .model-info-wrapper .size-part .size-list .size-item.active {background-color: black; color: white; cursor: default;}
+
 .content-side .model-info-wrapper .color-wrapper {width: 100%; display: flex;}
 .content-side .model-info-wrapper .color-wrapper .color-item {flex: 1; margin: 5px; height: 60px; cursor: pointer; border: 1px solid white;}
 .content-side .model-info-wrapper .color-wrapper .color-item.active {border-color: red;}

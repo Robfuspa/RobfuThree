@@ -57,3 +57,23 @@ export function GetObjKey() {
 	}
 	return keyStr;
 }
+
+export function SetCabinetSize(model) {
+	if (!model) return;
+	const {selCabSize, sizeOld} = model;
+	model.scale.set(selCabSize.x/(sizeOld.x*100), selCabSize.y/(sizeOld.y*100), selCabSize.z/(sizeOld.z*100));
+}
+
+export function SetSameMat(oldMat) {
+	if (oldMat.length) {
+		const newMat = [];
+		oldMat.forEach(oldItem => {
+			const {color, map} = oldItem;
+			newMat.push(new THREE.MeshStandardMaterial({color, map, side:2}))
+		});
+		return newMat;
+	} else {
+		const {color, map} = oldMat;
+		return new THREE.MeshStandardMaterial({color, map, side:2});
+	}
+}

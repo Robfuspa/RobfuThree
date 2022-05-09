@@ -6,7 +6,7 @@ import imgWood1 from '../../images/wood_texture/wood_1.jpg';
 import imgWood2 from '../../images/wood_texture/wood_2.jpg';
 import imgWood3 from '../../images/wood_texture/wood_3.jpg';
 
-export const sideW = 400, canvasH = window.innerHeight - 550, contentW = Math.min(window.innerWidth - 100, 1600) ;
+export const sideW = 400, canvasH = window.innerHeight - 550, contentW = Math.min(window.innerWidth - 100, 1600);
 
 export const stepArr = [
 	{key:'style', label:'ESTILO', sideTitle:'ELIGE EL ESTILO DE COCINA', sideDes:'Elige el diseño de la cocina que quieres usar para tu proyecto'},
@@ -47,20 +47,37 @@ export const posArr = [
 	{key:'floor', title:'Floor Cabinet'},
 	{key:'wall', title:'Wall Cabinet'},
 	{key:'ceiling', title:'Ceiling Cabinet'},
+	{key:'electric', title:'Electrics'},
 ]
 
 // export const cabinetArr = [
-// 	{key:'cabinet0', pos:'floor', title:'Cabinet 1', model:'cabinet_test_0', thumb:'cabinet_test_0', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:35.88, stock:150},
+// 	{key:'cabinet0', pos:'floor', title:'Cabinet 1', model:'cabinet_test_0', thumb:'cabinet_test_0', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:35.88, stock:150},
 // ]
 
+function getRandom(type) {
+	if (type==='price') return Math.round(Math.random() * 10000)/100;
+	else return Math.round(Math.random() * 1000);
+}
+
+const sW45Arr = [45, 40, 35, 30], sW60Arr = [60], sW90Arr = [90], sW80Arr = [80], sW15Arr = [20, 15];
+const sHArr = [80, 75];
+const sD45Arr = [58, 52, 48], sD60Arr = [55, 50];
+
 export const cabinetArr = [
-	{key:'3_drawer_Boxside_Inner', title:'3_drawer_Boxside_Inner', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)},
-	{key:'holding_rack_for_the_lower_branch_1', title:'holding_rack_for_the_lower_branch_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)},
-	{key:'Kitchen_cornersystem_round_rack_1', title:'Kitchen_cornersystem_round_rack_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)},
-	{key:'Kitchen_furnitures_down_45_cm_doors_St_1', title:'Kitchen_furnitures_down_45_cm_doors_St_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)},
-	{key:'Kitchen_furnitures_down_80_cm_doors_St_1', title:'Kitchen_furnitures_down_80_cm_doors_St_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)},
-	{key:'Kitchen_Slider_Cabinet_Storages_ML003H_St_1', title:'Kitchen_Slider_Cabinet_Storages_ML003H_St_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)},
-	{key:'Plate_rack_drawer_St_1', title:'Plate_rack_drawer_St_1', pos:'floor', subTitle:'ARANCIO CANYON 835 ACABADO SEI (MATE)', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:Math.round(Math.random() * 10000)/100, stock:Math.round(Math.random() * 1000)}
+	{key:'3_drawer_Boxside_Inner', title:'3_drawer_Boxside_Inner', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW45Arr, y:sHArr, z:sD45Arr}},
+	{key:'holding_rack_for_the_lower_branch_1', title:'holding_rack_for_the_lower_branch_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW45Arr, y:sHArr, z:sD45Arr}},
+	{key:'Kitchen_cornersystem_round_rack_1', title:'Kitchen_cornersystem_round_rack_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW90Arr, y:sHArr, z:sW90Arr}},
+	{key:'Kitchen_furnitures_down_45_cm_doors_St_1', title:'Kitchen_furnitures_down_45_cm_doors_St_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW45Arr, y:sHArr, z:sD45Arr}},
+	{key:'Kitchen_furnitures_down_60_cm_drawers_St_1', title:'Kitchen_furnitures_down_60_cm_drawers_St_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW60Arr, y:sHArr, z:sD60Arr}},
+	{key:'Kitchen_furnitures_down_60_cm_oven_St_1', title:'Kitchen_furnitures_down_60_cm_oven_St_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW60Arr, y:sHArr, z:sD60Arr}},
+	{key:'Kitchen_furnitures_down_80_cm_doors_St_1', title:'Kitchen_furnitures_down_80_cm_doors_St_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW80Arr, y:sHArr, z:sD60Arr}},
+	{key:'Kitchen_furnitures_up_45_cm_doors_vertical_St_1', title:'Kitchen_furnitures_up_45_cm_doors_vertical_St_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW45Arr, y:sHArr, z:sD45Arr}},
+	{key:'Kitchen_Slider_Cabinet_Storages_ML003H_St_1', title:'Kitchen_Slider_Cabinet_Storages_ML003H_St_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock'), sizeArr:{x:sW15Arr, y:sHArr, z:sD60Arr}},
+	// {key:'Plate_rack_drawer_St_1', title:'Plate_rack_drawer_St_1', pos:'floor', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock')}
+	{key:'Gorenje', title:'Gorenje', h:100, pos:'electric', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock')},
+	{key:'KitchenSink', title:'KitchenSink', h:50, pos:'electric', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock')},
+	{key:'maya2sketchfab', title:'maya2sketchfab', h:0.1, pos:'electric', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock')},
+	{key:'refrigerator', title:'refrigerator', h:200, pos:'electric', subTitle:'Title test', sku:'sku0000', provider:'Provider Name', brand:'Brand 1', price:getRandom('price'), stock:getRandom('stock')},
 ];
 
 export const cabColArr = [
